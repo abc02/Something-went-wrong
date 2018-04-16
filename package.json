@@ -11,7 +11,8 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "vue": "^2.5.2"
+    "vue": "^2.5.2",
+    "vue-amap": "^0.5.4"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
