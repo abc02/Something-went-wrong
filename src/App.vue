@@ -82,7 +82,7 @@ li{
       <el-amap ref="map" vid="amapDemo" :amap-manager="amapManager" :resizeEnable="true" :center="center" :zoom="zoom" :plugin="plugin" :events="events">
         <el-amap-marker v-if="markers" v-for="(marker, index) in markers" :position="marker.position" :template="marker.template" :vid="index" :key="index"></el-amap-marker>
         <el-amap-polyline v-if="polyline.path" :editable="polyline.editable" :path="polyline.path" :events="polyline.events" :strokeColor="polyline.strokeColor"></el-amap-polyline>
-        <el-amap-circle-marker
+        <el-amap-circle
           v-if="circleMarkers"
           v-for="(circleMarker, index) in circleMarkers"
           :key="10000 + index"
@@ -93,7 +93,7 @@ li{
           :strokeOpacity="circleMarker.strokeOpacity"
           :strokeWeight="circleMarker.strokeWeight"
           :fill-color="circleMarker.fillColor"
-          :fill-opacity="circleMarker.fillOpacity"></el-amap-circle-marker>
+          :fill-opacity="circleMarker.fillOpacity"></el-amap-circle>
       </el-amap>
     </div>
     <div class="bottom-fixed " v-if="current">
@@ -146,9 +146,9 @@ let decodedstr = location.search.substr(1)
 // var str = JSON.stringify(boby) // req.boby
 // console.log(str)
 // let decodedstr = new Buffer(base64).toString('base64')
-console.log('base64 ' + decodedstr)
+// console.log('base64 ' + decodedstr)
 let { JwtToken, userId, fixingId, time } = qs.parse(new Buffer(decodedstr, 'base64').toString())
-console.log(JwtToken, userId, fixingId, time)
+// console.log(JwtToken, userId, fixingId, time)
 axios.defaults.baseURL = 'https://datainterface.abpao.com/v1'
 axios.defaults.headers.common['Authorization'] = JwtToken
 let amapManager = new AMapManager()
@@ -161,7 +161,7 @@ export default {
       lists: null,
       amapManager,
       zoom: 12,
-      center: [121.59996, 31.197646],
+      center: [120.620565, 28.028145],
       circleMarkers: null,
       markers: null,
       polyline: {
@@ -268,6 +268,7 @@ export default {
       return {
         circleMarkers: [
           {
+            editable: false,
             center: bd09togcj02(current.longitude, current.latitude),
             radius: current.radius,
             zIndex: 999,
