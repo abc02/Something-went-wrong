@@ -21,8 +21,8 @@ li{
   /* margin-top: 60px; */
 }
 .amap-wrapper {
-  height: 100%;
-  height: 100vh;
+  /* height: 100%; */
+  height: 30vh;
 }
 
 .slider-wraper{
@@ -79,13 +79,13 @@ li{
 <template>
   <div id="app">
     <div class="amap-wrapper">
-      <el-amap ref="map" vid="amapDemo" :amap-manager="amapManager" :center="center" :zoom="zoom" :plugin="plugin" :events="events">
+      <el-amap ref="map" vid="amapDemo" :amap-manager="amapManager" :resizeEnable="true" :center="center" :zoom="zoom" :events="events">
         <el-amap-marker v-if="markers" v-for="(marker, index) in markers" :position="marker.position" :template="marker.template" :vid="index" :key="index"></el-amap-marker>
         <el-amap-polyline v-if="polyline.path" :editable="polyline.editable" :path="polyline.path" :events="polyline.events" :strokeColor="polyline.strokeColor"></el-amap-polyline>
         <el-amap-circle-marker
           v-if="circleMarkers"
-          v-for="circleMarker in circleMarkers"
-          :key="circleMarker.center[0]"
+          v-for="(circleMarker, index) in circleMarkers"
+          :key="10000 + index"
           :center="circleMarker.center"
           :radius="circleMarker.radius"
           :zIndex="circleMarker.zIndex"
@@ -96,7 +96,7 @@ li{
           :fill-opacity="circleMarker.fillOpacity"></el-amap-circle-marker>
       </el-amap>
     </div>
-    <div class="bottom-fixed " v-if="current">
+    <!-- <div class="bottom-fixed " v-if="current">
       <div style="display:flex;" class="slider-wraper">
         <el-button icon="el-icon-caret-left" circle size="small" @click="handleMarker(-1)"></el-button>
         <el-slider :min="min" :max="max" v-model="currentPage" style="flex: 1;" class="slider" @change="handleChanerMaker"></el-slider>
@@ -112,7 +112,9 @@ li{
     </div>
     <div v-if="isLists && lists">
       <ul class="bottom-top-right-left-fixed" >
-        <li v-for="list in lists" :key="list.create_time" style="display: flex; padding-top: 10px; padding-bottom: 10px; border-bottom: 1px solid darkgrey">
+        <li v-for="(list, index) in lists" :key="list.create_time"
+          style="display: flex; padding-top: 10px; padding-bottom: 10px; border-bottom: 1px solid darkgrey"
+          @click="handleChanerMaker(index)">
           <div style="padding: 20px;">
             <img style="width: 18px; height: 18px;" src="static/icon_gps.png" v-if="list.mode === 'GPS'">
             <img style="width: 18px; height: 18px;" src="static/icon_wifi.png" v-if="list.mode === 'WIFI'">
@@ -125,7 +127,7 @@ li{
         </li>
       </ul>
        <el-button type="primary" class="bottom-right-fixed" @click="isLists = false">返回</el-button>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -135,10 +137,14 @@ import lbs from '../static/icon_lbs.png'
 import wifi from '../static/icon_wifi.png'
 import marker from '../static/maker.png'
 import { bd09togcj02 } from 'coordtransform'
-import test from './test.json'
+// import test from './test.json'
+import axios from 'axios'
+import qs from 'qs'
 import { AMapManager } from 'vue-amap'
+let { JwtToken, userId, fixingId, time } = qs.parse(location.search.substr(1))
+axios.defaults.baseURL = 'https://datainterface.abpao.com/v1'
+axios.defaults.headers.common['Authorization'] = JwtToken
 let amapManager = new AMapManager()
-console.log(test)
 export default {
   data () {
     return {
@@ -148,7 +154,7 @@ export default {
       lists: null,
       amapManager,
       zoom: 12,
-      center: null,
+      center: [121.59996, 31.197646],
       circleMarkers: null,
       markers: null,
       polyline: {
@@ -174,6 +180,9 @@ export default {
           //   console.log(result)
           // })
         },
+        complete: () => {
+          this.$refs.map.$amap.setFitView()
+        },
         'moveend': () => {
         },
         'zoomchange': () => {
@@ -181,16 +190,16 @@ export default {
         'click': (e) => {
           // alert('map clicked')
         }
-      },
-      plugin: ['ToolBar', {
-        pName: 'MapType',
-        defaultType: 0,
-        events: {
-          init (o) {
-            // console.log(o)
-          }
-        }
-      }]
+      }
+      // plugin: ['ToolBar', {
+      //   pName: 'MapType',
+      //   defaultType: 0,
+      //   events: {
+      //     init (o) {
+      //       // console.log(o)
+      //     }
+      //   }
+      // }]
     }
   },
   computed: {
@@ -208,20 +217,24 @@ export default {
     }
   },
   created () {
-    let lists = test.data
-    let currentPage = test.data.length - 1
-    console.log(currentPage)
-    let { current } = this.generateCurrent(lists, currentPage)
-    let { markers, polylinePaths } = this.generateMarkers(test.data)
-    let { center } = this.generateCenter(current)
-    let { circleMarkers } = this.generateCircleMarkers(current)
-    this.current = current
-    this.currentPage = currentPage
-    this.lists = lists
-    this.center = center
-    this.markers = markers
-    this.polyline.path = polylinePaths
-    this.circleMarkers = circleMarkers
+    axios.post('/xiedian_fixing/GetTrackForWeb', qs.stringify({ userId, fixingId, time })).then(res => {
+      if (res.data.ret === 1002) return alert(res.data.code)
+      if (res.data.ret === 1001) {
+        let lists = res.data.data
+        let currentPage = lists.length - 1
+        let { current } = this.generateCurrent(lists, currentPage)
+        let { markers, polylinePaths } = this.generateMarkers(lists)
+        let { center } = this.generateCenter(current)
+        let { circleMarkers } = this.generateCircleMarkers(current)
+        this.current = current
+        this.currentPage = currentPage
+        this.lists = lists
+        this.center = center
+        this.markers = markers
+        this.polyline.path = polylinePaths
+        this.circleMarkers = circleMarkers
+      }
+    })
   },
   methods: {
     generateCurrent (data, currentPage) {
@@ -233,9 +246,9 @@ export default {
       let markers = []
       let polylinePaths = []
       data.forEach(item => {
-        markers.push({    
+        markers.push({
           position: bd09togcj02(item.longitude, item.latitude),
-          template: `<img src=${marker} style="width: 20px; height: 20px; position: relative; top: 20px;"/>`,
+          template: `<img src=${marker} style="width: 20px; height: 20px; position: relative; top: 20px;"/>`
         })
         polylinePaths.push(bd09togcj02(item.longitude, item.latitude))
       })
@@ -273,6 +286,7 @@ export default {
       this.current = current
       this.circleMarkers = circleMarkers
       this.center = center
+      this.isLists = false
     },
     handleMarker (value) {
       let newValue = this.currentPage + value
