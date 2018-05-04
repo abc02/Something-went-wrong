@@ -97,7 +97,7 @@ li{
           :strokeOpacity="circleMarker.strokeOpacity"
           :strokeWeight="circleMarker.strokeWeight"
           :fill-color="circleMarker.fillColor"
-          :fill-opacity="circleMarker.fillOpacity"></el-amap-circle-marker>
+          :fill-opacity="circleMarker.fillOpacity"></el-amap-circle>
       </el-amap>
     </div>
     <!-- <div class="bottom-fixed " v-if="current">
