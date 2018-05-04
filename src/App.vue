@@ -85,10 +85,11 @@ li{
       <el-amap ref="map" vid="amapDemo" :amap-manager="amapManager" :resizeEnable="true" :center="center" :zoom="zoom" :events="events">
         <el-amap-marker v-if="markers" v-for="(marker, index) in markers" :position="marker.position" :template="marker.template" :vid="index" :key="index"></el-amap-marker>
         <el-amap-polyline v-if="polyline.path" :editable="polyline.editable" :path="polyline.path" :events="polyline.events" :strokeColor="polyline.strokeColor"></el-amap-polyline>
-        <el-amap-circle-marker
+        <el-amap-circle
           v-if="circleMarkers"
           v-for="(circleMarker, index) in circleMarkers"
           :key="10000 + index"
+          :editable="circleMarker.editable"
           :center="circleMarker.center"
           :radius="circleMarker.radius"
           :zIndex="circleMarker.zIndex"
@@ -157,7 +158,7 @@ export default {
       lists: null,
       amapManager,
       zoom: 12,
-      center: [121.59996, 31.197646],
+      center: [120.620565, 28.028145],
       circleMarkers: null,
       markers: null,
       polyline: {
@@ -264,6 +265,7 @@ export default {
       return {
         circleMarkers: [
           {
+            editable: false,
             center: bd09togcj02(current.longitude, current.latitude),
             radius: current.radius,
             zIndex: 999,
