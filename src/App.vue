@@ -141,7 +141,14 @@ import { bd09togcj02 } from 'coordtransform'
 import axios from 'axios'
 import qs from 'qs'
 import { AMapManager } from 'vue-amap'
-let { JwtToken, userId, fixingId, time } = qs.parse(location.search.substr(1))
+let decodedstr = qs.parse(location.search.substr(1))
+// var boby = 'name=chenziang&password=a123456'
+// var str = JSON.stringify(boby) // req.boby
+// console.log(str)
+// let decodedstr = new Buffer(base64).toString('base64')
+console.log('base64 ' + decodedstr)
+let { JwtToken, userId, fixingId, time } = new Buffer(decodedstr, 'base64').toString()
+console.log(JwtToken, userId, fixingId, time)
 axios.defaults.baseURL = 'https://datainterface.abpao.com/v1'
 axios.defaults.headers.common['Authorization'] = JwtToken
 let amapManager = new AMapManager()
