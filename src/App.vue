@@ -6,6 +6,9 @@ html,body,div,h1,h2,h3,p,ul,li{
 li{
   list-style: none;
 }
+.amap-logo,.amap-copyright {
+  display: none !important;
+}
 .amap-toolbar {
   bottom: 50% !important;
 }
