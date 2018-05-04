@@ -1,11 +1,11 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-// import { Button, Slider } from 'element-ui'
+import { Button, Slider } from 'element-ui'
 import App from './App'
 import VueAMap from 'vue-amap'
-// Vue.component(Button.name, Button)
-// Vue.component(Slider.name, Slider)
+Vue.component(Button.name, Button)
+Vue.component(Slider.name, Slider)
 Vue.use(VueAMap)
 VueAMap.initAMapApiLoader({
   key: '7204bfff049e6370b935f9ccbf3bf61e',

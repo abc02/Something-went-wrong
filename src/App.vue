@@ -21,8 +21,8 @@ li{
   /* margin-top: 60px; */
 }
 .amap-wrapper {
-  /* height: 100%; */
-  height: 30vh;
+  height: 100%;
+  height: 100vh;
 }
 
 .slider-wraper{
@@ -79,7 +79,7 @@ li{
 <template>
   <div id="app">
     <div class="amap-wrapper">
-      <el-amap ref="map" vid="amapDemo" :amap-manager="amapManager" :resizeEnable="true" :center="center" :zoom="zoom" :events="events">
+      <el-amap ref="map" vid="amapDemo" :amap-manager="amapManager" :resizeEnable="true" :center="center" :zoom="zoom" :plugin="plugin" :events="events">
         <el-amap-marker v-if="markers" v-for="(marker, index) in markers" :position="marker.position" :template="marker.template" :vid="index" :key="index"></el-amap-marker>
         <el-amap-polyline v-if="polyline.path" :editable="polyline.editable" :path="polyline.path" :events="polyline.events" :strokeColor="polyline.strokeColor"></el-amap-polyline>
         <el-amap-circle-marker
@@ -96,7 +96,7 @@ li{
           :fill-opacity="circleMarker.fillOpacity"></el-amap-circle-marker>
       </el-amap>
     </div>
-    <!-- <div class="bottom-fixed " v-if="current">
+    <div class="bottom-fixed " v-if="current">
       <div style="display:flex;" class="slider-wraper">
         <el-button icon="el-icon-caret-left" circle size="small" @click="handleMarker(-1)"></el-button>
         <el-slider :min="min" :max="max" v-model="currentPage" style="flex: 1;" class="slider" @change="handleChanerMaker"></el-slider>
@@ -127,7 +127,7 @@ li{
         </li>
       </ul>
        <el-button type="primary" class="bottom-right-fixed" @click="isLists = false">返回</el-button>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -141,13 +141,13 @@ import { bd09togcj02 } from 'coordtransform'
 import axios from 'axios'
 import qs from 'qs'
 import { AMapManager } from 'vue-amap'
-let decodedstr = qs.parse(location.search.substr(1))
+let decodedstr = location.search.substr(1)
 // var boby = 'name=chenziang&password=a123456'
 // var str = JSON.stringify(boby) // req.boby
 // console.log(str)
 // let decodedstr = new Buffer(base64).toString('base64')
 console.log('base64 ' + decodedstr)
-let { JwtToken, userId, fixingId, time } = new Buffer(decodedstr, 'base64').toString()
+let { JwtToken, userId, fixingId, time } = qs.parse(new Buffer(decodedstr, 'base64').toString())
 console.log(JwtToken, userId, fixingId, time)
 axios.defaults.baseURL = 'https://datainterface.abpao.com/v1'
 axios.defaults.headers.common['Authorization'] = JwtToken
@@ -197,16 +197,16 @@ export default {
         'click': (e) => {
           // alert('map clicked')
         }
-      }
-      // plugin: ['ToolBar', {
-      //   pName: 'MapType',
-      //   defaultType: 0,
-      //   events: {
-      //     init (o) {
-      //       // console.log(o)
-      //     }
-      //   }
-      // }]
+      },
+      plugin: ['ToolBar', {
+        pName: 'MapType',
+        defaultType: 0,
+        events: {
+          init (o) {
+            // console.log(o)
+          }
+        }
+      }]
     }
   },
   computed: {
