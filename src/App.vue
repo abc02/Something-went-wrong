@@ -21,8 +21,8 @@ li{
   /* margin-top: 60px; */
 }
 .amap-wrapper {
-  /* height: 100%; */
-  height: 30vh;
+  height: 100%;
+  height: 100vh;
 }
 
 .slider-wraper{
