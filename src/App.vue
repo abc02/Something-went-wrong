@@ -222,7 +222,8 @@ export default {
   },
   created () {
     axios.post('/xiedian_fixing/GetTrackForWeb', qs.stringify({ userId, fixingId, time })).then(res => {
-      if (res.data.ret === 1002) return alert(res.data.code)
+      // if (res.data.ret === 1002) return alert(res.data.code)
+      if (res.data.ret === 1002) return console.log(res.data.code)
       if (res.data.ret === 1001) {
         let lists = res.data.data
         let currentPage = lists.length - 1
