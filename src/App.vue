@@ -141,16 +141,12 @@ import { bd09togcj02 } from 'coordtransform'
 import axios from 'axios'
 import qs from 'qs'
 import { AMapManager } from 'vue-amap'
-let decodedstr = location.search.substr(1)
-// var boby = 'name=chenziang&password=a123456'
-// var str = JSON.stringify(boby) // req.boby
-// console.log(str)
-// let decodedstr = new Buffer(base64).toString('base64')
-// console.log('base64 ' + decodedstr)
-let { JwtToken, userId, fixingId, time } = qs.parse(new Buffer(decodedstr, 'base64').toString())
-// console.log(JwtToken, userId, fixingId, time)
-axios.defaults.baseURL = 'https://datainterface.abpao.com/v1'
-axios.defaults.headers.common['Authorization'] = JwtToken
+console.log(Buffer)
+let decodedArray = location.search.substr(1).split('&')
+let decodedString = decodedArray[0]
+let buffer = Buffer.from(decodedString, 'base64')
+let bufferString = buffer.toString()
+let { JwtToken, userId, fixingId, time } = qs.parse(bufferString)
 let amapManager = new AMapManager()
 export default {
   data () {
@@ -224,8 +220,7 @@ export default {
     }
   },
   created () {
-    axios.post('/xiedian_fixing/GetTrackForWeb', qs.stringify({ userId, fixingId, time })).then(res => {
-      if (res.data.ret === 1002) return alert(res.data.code)
+    axios.post('https://datainterface.abpao.com/v1/xiedian_fixing/GetTrackForWeb', qs.stringify({ userId, fixingId, time }), { headers: { Authorization: JwtToken } }).then(res => {
       if (res.data.ret === 1001) {
         let lists = res.data.data
         let currentPage = lists.length - 1
@@ -241,6 +236,7 @@ export default {
         this.polyline.path = polylinePaths
         this.circleMarkers = circleMarkers
       }
+      if (res.data.ret === 1002) window.alert(res.data.code)
     })
   },
   methods: {
