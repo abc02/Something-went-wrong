@@ -141,7 +141,7 @@ import { bd09togcj02 } from 'coordtransform'
 import axios from 'axios'
 import qs from 'qs'
 import { AMapManager } from 'vue-amap'
-console.log(Buffer)
+// console.log(Buffer)
 let decodedArray = location.search.substr(1).split('&')
 let decodedString = decodedArray[0]
 let buffer = Buffer.from(decodedString, 'base64')
@@ -184,7 +184,7 @@ export default {
           // })
         },
         complete: () => {
-          this.$refs.map.$amap.setFitView()
+          // this.$refs.map.$amap.setFitView()
         },
         'moveend': () => {
         },
@@ -235,6 +235,12 @@ export default {
         this.markers = markers
         this.polyline.path = polylinePaths
         this.circleMarkers = circleMarkers
+        let lastArray = res.data.data[res.data.data.length - 1]
+        if (lastArray.radius > 549) {
+          this.zoom = 15
+        } else {
+          this.zoom = 19
+        }
       }
       if (res.data.ret === 1002) window.alert(res.data.code)
     })
@@ -291,6 +297,7 @@ export default {
       this.circleMarkers = circleMarkers
       this.center = center
       this.isLists = false
+      this.currentPage = value
     },
     handleMarker (value) {
       let newValue = this.currentPage + value
