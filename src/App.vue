@@ -277,8 +277,8 @@ export default {
             strokeColor: '#ffffff',
             strokeOpacity: '0.8',
             strokeWeight: 1,
-            fillColor: '#399af7',
-            fillOpacity: '0.6'
+            fillColor: '#689bff',
+            fillOpacity: '0.3'
           }
         ]
       }
